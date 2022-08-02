@@ -55,26 +55,30 @@ def switch_to_regular_cdn():
     print("=" * 20 + "\nStart switching to regular CDN")
     for current_task in task_list:
         allow_switch = False
-        remaining_traffic = current_task.cdn_account.get_remaining_traffic_percentage()
-        if remaining_traffic > current_task.traffic_package_floor_limit:
-            print("高于限制，切换")
-            allow_switch = True
-        else:
-            print("剩余流量：" + str(remaining_traffic) +
-                  " | 低于限制：" + str(current_task.traffic_package_floor_limit) + " | 不切换")
-        if current_task.cdn_account_type == "huaweicloud":
-            print("切换至华为云 CDN")
-            # 华为云/ Huawei Cloud
-        elif current_task.cdn_account_type == "qcloud":
-            print("切换至腾讯云 CDN")
-            # 腾讯云/ Qcloud/ Tencent Cloud
-        elif current_task.cdn_account_type == "gcore":
-            print("切换至 G-Core CDN")
-            # G-Core CDN
-        else:
-            # Others
+        if current_task.cdn_account is None:
             print("未知 CDN 服务商，根据规则默认允许切换")
             allow_switch = True
+        else:
+            remaining_traffic = current_task.cdn_account.get_remaining_traffic_percentage()
+            if remaining_traffic > current_task.traffic_package_floor_limit:
+                print("高于限制，切换")
+                allow_switch = True
+            else:
+                print("剩余流量：" + str(remaining_traffic) +
+                      " | 低于限制：" + str(current_task.traffic_package_floor_limit) + " | 不切换")
+            if current_task.cdn_account_type == "huaweicloud":
+                print("切换至华为云 CDN")
+                # 华为云/ Huawei Cloud
+            elif current_task.cdn_account_type == "qcloud":
+                print("切换至腾讯云 CDN")
+                # 腾讯云/ Qcloud/ Tencent Cloud
+            elif current_task.cdn_account_type == "gcore":
+                print("切换至 G-Core CDN")
+                # G-Core CDN
+            else:
+                # Others
+                print("未知 CDN 服务商，根据规则默认允许切换")
+                allow_switch = True
 
         if allow_switch:
             print("Switch to regular CDN: " + current_task.domain + "\nTarget CDN cname: " + current_task.cdn_cname)
