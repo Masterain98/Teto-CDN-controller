@@ -434,3 +434,62 @@ class HuaweiCloudAccount:
             return remaining_traffic["china_mainland_traffic_percent"]
         else:
             return remaining_traffic["china_off_peak_traffic_percent"]
+
+    def create_refresh_directory_task(self, task_list: list):
+        """
+        创建刷新目录缓存任务
+        :return:
+        """
+        client = CdnClient.new_builder() \
+            .with_credentials(self.__credentials) \
+            .with_region(CdnRegion.value_of("cn-north-1")) \
+            .build()
+
+        try:
+            request = CreateRefreshTasksRequest()
+            listUrlsRefreshTask = task_list
+            refreshTaskbody = RefreshTaskRequestBody(
+                type="directory",
+                urls=listUrlsRefreshTask
+            )
+            request.body = RefreshTaskRequest(
+                refresh_task=refreshTaskbody
+            )
+            response = client.create_refresh_tasks(request)
+            return json.loads(str(response))
+        except exceptions.ClientRequestException as e:
+            print(e.status_code)
+            print(e.request_id)
+            print(e.error_code)
+            print(e.error_msg)
+            return None
+
+    def create_refresh_file_task(self, task_list: list):
+        """
+
+        :param task_list:
+        :return:
+        """
+        client = CdnClient.new_builder() \
+            .with_credentials(self.__credentials) \
+            .with_region(CdnRegion.value_of("cn-north-1")) \
+            .build()
+
+        try:
+            request = CreateRefreshTasksRequest()
+            listUrlsRefreshTask = task_list
+            refreshTaskbody = RefreshTaskRequestBody(
+                type="file",
+                urls=listUrlsRefreshTask
+            )
+            request.body = RefreshTaskRequest(
+                refresh_task=refreshTaskbody
+            )
+            response = client.create_refresh_tasks(request)
+            return json.loads(str(response))
+        except exceptions.ClientRequestException as e:
+            print(e.status_code)
+            print(e.request_id)
+            print(e.error_code)
+            print(e.error_msg)
+            return None

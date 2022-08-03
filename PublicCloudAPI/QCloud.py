@@ -62,3 +62,62 @@ class QCloudAccount:
     @class_log_printer
     def get_remaining_traffic_percentage(self):
         return self.get_remaining_traffic()["bytes_remaining_percentage"]
+
+    @class_log_printer
+    def create_refresh_directory_task(self, task_list: list):
+        try:
+            # 实例化一个http选项，可选的，没有特殊需求可以跳过
+            httpProfile = HttpProfile()
+            httpProfile.endpoint = "cdn.tencentcloudapi.com"
+
+            # 实例化一个client选项，可选的，没有特殊需求可以跳过
+            clientProfile = ClientProfile()
+            clientProfile.httpProfile = httpProfile
+            # 实例化要请求产品的client对象,clientProfile是可选的
+            client = cdn_client.CdnClient(self.cred, "", clientProfile)
+
+            # 实例化一个请求对象,每个接口都会对应一个request对象
+            req = models.PurgePathCacheRequest()
+            params = {
+                "Paths": task_list,
+                "FlushType": "flush"
+            }
+            req.from_json_string(json.dumps(params))
+
+            # 返回的resp是一个PurgePathCacheResponse的实例，与请求对象对应
+            resp = client.PurgePathCache(req)
+            # 输出json格式的字符串回包
+            return resp.to_json_string()
+
+        except TencentCloudSDKException as err:
+            print(err)
+            return None
+
+    @class_log_printer
+    def create_refresh_file_task(self, task_list: list):
+        try:
+            # 实例化一个http选项，可选的，没有特殊需求可以跳过
+            httpProfile = HttpProfile()
+            httpProfile.endpoint = "cdn.tencentcloudapi.com"
+
+            # 实例化一个client选项，可选的，没有特殊需求可以跳过
+            clientProfile = ClientProfile()
+            clientProfile.httpProfile = httpProfile
+            # 实例化要请求产品的client对象,clientProfile是可选的
+            client = cdn_client.CdnClient(self.cred, "", clientProfile)
+
+            # 实例化一个请求对象,每个接口都会对应一个request对象
+            req = models.PurgeUrlsCacheRequest()
+            params = {
+                "Urls": task_list,
+            }
+            req.from_json_string(json.dumps(params))
+
+            # 返回的resp是一个PurgeUrlsCacheResponse的实例，与请求对象对应
+            resp = client.PurgeUrlsCache(req)
+            # 输出json格式的字符串回包
+            return resp.to_json_string()
+
+        except TencentCloudSDKException as err:
+            print(err)
+            return None
