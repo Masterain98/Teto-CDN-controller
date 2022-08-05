@@ -3,7 +3,8 @@ from PublicCloudAPI.HuaweiCloud import HuaweiCloudAccount
 
 class PaaSTask:
     def __init__(self, domain: str, dns_account: HuaweiCloudAccount, cdn_cname: str, region: list,
-                 cdn_account=None, cdn_account_type=None, traffic_package_floor_limit: float = 0):
+                 cdn_account=None, cdn_account_type=None, traffic_package_floor_limit: float = 0,
+                 refresh_task_list: list = None):
         """
         :param domain: 此 CDN 域名
         :param dns_account: 默认为华为云DNS账号，不支持其它公有云
@@ -19,6 +20,7 @@ class PaaSTask:
         self.cdn_cname = cdn_cname
         self.region = region
         self.traffic_package_floor_limit = traffic_package_floor_limit
+        self.refresh_task_list = refresh_task_list
 
         if cdn_account is not None and cdn_account_type is not None:
             self.cdn_account = cdn_account
