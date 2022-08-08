@@ -134,6 +134,7 @@ class HuaweiCloudAccount:
         print("China line CDN provider: " + str(china_line_cdn_provider))
         print("Abroad line CDN provider: " + str(abroad_line_cdn_provider))
         return {
+            "name": name,
             "default": default_line_cdn_provider,
             "CN": china_line_cdn_provider,
             "Abroad": abroad_line_cdn_provider
