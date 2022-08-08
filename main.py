@@ -152,7 +152,9 @@ def switch_to_free_cdn():
         current_PaaSTask = current_task[0]
         # 每一个 current_task 代表一个 CDN 域名
         current_cdn_status = current_PaaSTask.dns_account.describe_cdn_provider(name=current_PaaSTask.domain)
+        this_task_message.add_message(current_cdn_status)
         # current_cdn_status 的结构为         {
+        #             "name": "www.example.com",
         #             "default": default_line_cdn_provider,
         #             "CN": china_line_cdn_provider,
         #             "Abroad": abroad_line_cdn_provider
@@ -166,32 +168,32 @@ def switch_to_free_cdn():
                     # 如果该 CDN 帐号是默认 CDN 帐号，则不需要检查流量包剩余量
                     current_remaining_traffic_percent = current_task[i][0].get_remaining_traffic()
                     if current_remaining_traffic_percent < current_task[i][2]:
-                        this_task_message.add_message("CDN Traffic Package is low, switch to fail-over CDN: " + current_PaaSTask.domain)
+                        this_task_message.add_message("CDN Traffic Package is low at [Default] line, switch to fail-over CDN: " + current_PaaSTask.domain)
                         current_PaaSTask.dns_account.update_record_set_by_name_line(name=current_PaaSTask.domain,
                                                                                     target_line="default-view",
                                                                                     record_type="CNAME",
                                                                                     new_record_value=[
                                                                                         current_PaaSTask.cdn_cname])
                     else:
-                        this_task_message.add_message("CDN Traffic Package is high, keep using default CDN at Default Line: "
+                        this_task_message.add_message("CDN Traffic Package is high, keep current record at [Default] line: "
                                                       + current_PaaSTask.domain)
                         pass
                 elif this_cdn_type in current_cdn_status["CN"]:
                     current_remaining_traffic_percent = current_task[i][0].get_remaining_traffic()
                     if current_remaining_traffic_percent < current_task[i][2]:
-                        this_task_message.add_message("CDN Traffic Package is low, switch to fail-over CDN: " + current_PaaSTask.domain)
+                        this_task_message.add_message("CDN Traffic Package is low at [CN] line, switch to fail-over CDN: " + current_PaaSTask.domain)
                         current_PaaSTask.dns_account.update_record_set_by_name_line(name=current_PaaSTask.domain,
                                                                                     target_line="CN",
                                                                                     record_type="CNAME",
                                                                                     new_record_value=[
                                                                                         current_PaaSTask.cdn_cname])
                     else:
-                        this_task_message.add_message("CDN Traffic Package is high, keep using default CDN at CN Line: " + current_PaaSTask.domain)
+                        this_task_message.add_message("CDN Traffic Package is high, keep current record at [CN] line: " + current_PaaSTask.domain)
                         pass
                 elif this_cdn_type in current_cdn_status["Abroad"]:
                     current_remaining_traffic_percent = current_task[i][0].get_remaining_traffic()
                     if current_remaining_traffic_percent < current_task[i][2]:
-                        this_task_message.add_message("CDN Traffic Package is low, switch to fail-over CDN: " + current_PaaSTask.domain)
+                        this_task_message.add_message("CDN Traffic Package is low at [Abroad] line, switch to fail-over CDN: " + current_PaaSTask.domain)
                         current_PaaSTask.dns_account.update_record_set_by_name_line(name=current_PaaSTask.domain,
                                                                                     target_line="Abroad",
                                                                                     record_type="CNAME",
@@ -199,10 +201,10 @@ def switch_to_free_cdn():
                                                                                         current_PaaSTask.cdn_cname])
                     else:
                         this_task_message.add_message(
-                            "CDN Traffic Package is high, keep using default CDN at Aboard Line: " + current_PaaSTask.domain)
+                            "CDN Traffic Package is high, keep current record at [Aboard] line: " + current_PaaSTask.domain)
                         pass
             else:
-                pass
+                continue
     this_task_message.add_message("Task Ended Successfully" + "\n" + "=" * 20)
     this_task_message.push()
 
