@@ -162,8 +162,11 @@ def switch_to_free_cdn():
 
         for i in range(len(current_task)):
             # i == 0 位置为 fail-over CDN 帐号对象
+            print("i: " + str(i))
+            print("current_task[i]: " + str(current_task[i]))
             if i > 0:
                 this_cdn_type = current_task[i][1]
+                this_task_message.add_message("this_cdn_type: " + str(this_cdn_type))
                 if this_cdn_type in current_cdn_status["default"]:
                     # 如果该 CDN 帐号是默认 CDN 帐号，则不需要检查流量包剩余量
                     current_remaining_traffic_percent = current_task[i][0].get_remaining_traffic()
@@ -205,6 +208,7 @@ def switch_to_free_cdn():
                         pass
             else:
                 continue
+            this_task_message.add_message_no_time("-" * 20)
     this_task_message.add_message("Task Ended Successfully" + "\n" + "=" * 20)
     this_task_message.push()
 
@@ -215,7 +219,7 @@ if __name__ == '__main__':
         config = json.load(f)
     for task in config["task"]:
         domain = task["domain"]
-        welcome_msg.add_message("=" * 20 + "\nStart checking domain config: " + domain)
+        welcome_msg.add_message_no_time("=" * 20 + "\nStart checking domain config: " + domain)
         enable_off_peak_switch = task["enable_off_peak_switch"]
         enable_traffic_package_switch = task["enable_traffic_package_switch"]
         traffic_package_floor_limit = task["traffic_package_floor_limit"]
@@ -294,8 +298,14 @@ if __name__ == '__main__':
                             pass
                 switch_to_free_cdn_list.append(fail_over_task_list)
     welcome_msg.add_message("\nRead config file successfully" + "\n" + "=" * 20)
+    welcome_msg.add_message("switch_to_off_peak_cdn_list: " + str(switch_to_off_peak_cdn_list))
+    welcome_msg.add_message_no_time("-" * 20)
+    welcome_msg.add_message("switch_to_regular_cdn_list: " + str(switch_to_regular_cdn_list))
+    welcome_msg.add_message_no_time("-" * 20)
+    welcome_msg.add_message("switch_to_free_cdn_list: " + str(switch_to_free_cdn_list))
     welcome_msg.push()
 
     while True:
         schedule.run_pending()
         time.sleep(1)
+
