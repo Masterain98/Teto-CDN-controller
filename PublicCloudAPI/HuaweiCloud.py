@@ -441,10 +441,16 @@ class HuaweiCloudAccount:
         创建刷新目录缓存任务
         :return:
         """
-        client = CdnClient.new_builder() \
-            .with_credentials(self.__credentials) \
-            .with_region(CdnRegion.value_of("cn-north-1")) \
-            .build()
+        try:
+            client = CdnClient.new_builder() \
+                .with_credentials(self.__credentials) \
+                .with_region(CdnRegion.value_of("cn-north-1")) \
+                .build()
+        except TypeError:
+            client = CdnClient.new_builder() \
+                .with_credentials(self.__global_credentials) \
+                .with_region(CdnRegion.value_of("cn-north-1")) \
+                .build()
 
         try:
             request = CreateRefreshTasksRequest()
