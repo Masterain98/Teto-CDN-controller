@@ -231,7 +231,7 @@ def switch_to_free_cdn():
 
 if __name__ == '__main__':
     welcome_msg = TgMsg("\n" + "Teto CDN Control System Started" + "\n" + "=" * 20)
-    with open("./config/task.json", "r") as f:
+    with open("config.json", "r") as f:
         config = json.load(f)
     for task in config["task"]:
         domain = task["domain"]
@@ -323,6 +323,4 @@ if __name__ == '__main__':
     welcome_msg.add_message("Read config file successfully" + "\n" + "=" * 20)
     welcome_msg.push()
 
-    while True:
-        schedule.run_pending()
-        time.sleep(1)
+    switch_to_free_cdn()
